@@ -22,6 +22,8 @@ pygame.display.set_caption("My Game")
 clock = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
 all_guys = []
+nerd_image = pygame.image.load('Nerd.png').convert_alpha()
+hooligan_image = pygame.image.load('Hooligan.png').convert_alpha()
 
 # Рендеринг
 screen.fill(PURPLE)
@@ -46,7 +48,8 @@ class Hooligan(Guy):
     def __init__(self, group: pygame.sprite.Group):
         super().__init__(group)
         self.type_name = "Hooligan"
-        self.image.fill(RED)
+        self.image = pygame.transform.scale(hooligan_image, (60, 75))
+
         self.rect.center = (random.randint(0, 360), 0)
 
     def update(self):
@@ -58,8 +61,9 @@ class Player(Guy):
     def __init__(self, group: pygame.sprite.Group):
         super().__init__(group)
         self.type_name = "Player"
-        self.image.fill(GREEN)
-        self.rect.center = (WIDTH / 2, HEIGHT - 40)
+        self.image = pygame.transform.scale(nerd_image, (60, 75))
+        # self.image.fill(GREEN)
+        self.rect.center = (WIDTH / 2, HEIGHT - 60)
 
     def update(self):
         if pygame.key.get_pressed()[pygame.K_RIGHT]:
@@ -68,7 +72,7 @@ class Player(Guy):
             self.rect.x -= 2
 
 
-class TextSprite():
+class TextSprite:
     def __init__(self, size: int, place_cord, message_str: str, colour):
         self.font = pygame.font.Font(None, size)
         self.message = self.font.render(message_str, True, colour)
@@ -132,7 +136,7 @@ while running:
     # Обновление
     if game_status:
         hooligan_timer += 1
-        if hooligan_timer == 120:
+        if hooligan_timer == 60:
             all_guys.append(Hooligan(all_sprites))
             hooligan_timer = 0
         game_status = check_guys(all_guys)
