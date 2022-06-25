@@ -71,9 +71,9 @@ class Player(Guy):
 
     def update(self):
         if pygame.key.get_pressed()[pygame.K_RIGHT]:
-            self.rect.x += 2
+            self.rect.x = min(self.rect.x + 2, WIDTH - 60)
         elif pygame.key.get_pressed()[pygame.K_LEFT]:
-            self.rect.x -= 2
+            self.rect.x = max(self.rect.x - 2, 0)
 
 
 class TextSprite:
