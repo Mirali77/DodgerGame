@@ -98,11 +98,17 @@ all_guys.append(Player(all_sprites))
 
 game_status = True
 hooligan_timer = 0
+hooligan_limit = 80
+chosen_lvl = 1
 gio_message = TextSprite(54, (WIDTH / 2, HEIGHT / 2 - 30), "GAME IS OVER", BLACK)
 pa_message = TextSprite(36, (WIDTH / 2, HEIGHT / 2 + 10), "Play again?", BLACK)
 yes_message = TextSprite(36, (WIDTH / 2 - 40, HEIGHT / 2 + 50), "YES", BLACK)
 no_message = TextSprite(36, (WIDTH / 2 + 40, HEIGHT / 2 + 50), "NO", BLACK)
 score_message = TextSprite(36, (WIDTH - 60, 20), "SCORE: " + str(score), BLACK)
+first_lvl_message = TextSprite(36, (WIDTH - 40, 50), "LVL-1", GREEN)
+second_lvl_message = TextSprite(36, (WIDTH - 40, 80), "LVL-2", BLUE)
+third_lvl_message = TextSprite(36, (WIDTH - 40, 110), "LVL-3", RED)
+chosen_lvl_message = TextSprite(30, (85, 20), "CHOSEN LVL: " + str(chosen_lvl), RED)
 
 
 def check_guys(guys_list):
@@ -131,6 +137,9 @@ while running:
     # держим цикл на правильной скорости
     clock.tick(FPS)
 
+    # Название окна
+    pygame.display.set_caption('Dodger')
+    
     # Ввод процесса (события)
     for event in pygame.event.get():
         # проверить закрытие окна
@@ -143,11 +152,21 @@ while running:
                 all_guys.append(Player(all_sprites))
             elif is_rectangle_clicked(event.pos, no_message.rect):
                 running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if is_rectangle_clicked(event.pos, first_lvl_message.rect):
+                hooligan_limit = 60
+                chosen_lvl = 1
+            elif is_rectangle_clicked(event.pos, second_lvl_message.rect):
+                hooligan_limit = 40
+                chosen_lvl = 2
+            elif is_rectangle_clicked(event.pos, third_lvl_message.rect):
+                hooligan_limit = 25
+                chosen_lvl = 3
 
     # Обновление
     if game_status:
         hooligan_timer += 1
-        if hooligan_timer == 60:
+        if hooligan_timer >= hooligan_limit:
             all_guys.append(Hooligan(all_sprites))
             hooligan_timer = 0
         game_status = check_guys(all_guys)
@@ -167,7 +186,12 @@ while running:
         yes_message.draw()
         no_message.draw()
     score_message.set_message("SCORE: " + str(score))
+    chosen_lvl_message.set_message("CHOSEN LVL: " + str(chosen_lvl))
     score_message.draw()
+    first_lvl_message.draw()
+    second_lvl_message.draw()
+    third_lvl_message.draw()
+    chosen_lvl_message.draw()
 
     # Визуализация (сборка)
     pygame.display.flip()
