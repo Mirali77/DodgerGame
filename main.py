@@ -29,6 +29,7 @@ hooligan_image = pygame.image.load('Hooligan.png').convert_alpha()
 screen.fill(PURPLE)
 # после отрисовки всего, переворачиваем экран
 pygame.display.flip()
+score = 0
 
 
 class Guy(pygame.sprite.Sprite):
@@ -53,7 +54,10 @@ class Hooligan(Guy):
         self.rect.center = (random.randint(0, 360), 0)
 
     def update(self):
-        self.rect.y += 4
+        global score
+        self.rect.y += 5
+        if self.rect.y == HEIGHT:
+            score += 1
 
 
 # Игрок
@@ -78,10 +82,16 @@ class TextSprite:
         self.message = self.font.render(message_str, True, colour)
         self.rect = self.message.get_rect(center=place_cord)
         self.text = message_str
+        self.place_cord = place_cord
 
     def draw(self):
         global screen
         screen.blit(self.message, self.rect)
+
+    def set_message(self, message_str):
+        self.message = self.font.render(message_str, True, BLACK)
+        self.rect = self.message.get_rect(center=self.place_cord)
+        self.text = message_str
 
 
 all_guys.append(Player(all_sprites))
@@ -92,6 +102,7 @@ gio_message = TextSprite(54, (WIDTH / 2, HEIGHT / 2 - 30), "GAME IS OVER", BLACK
 pa_message = TextSprite(36, (WIDTH / 2, HEIGHT / 2 + 10), "Play again?", BLACK)
 yes_message = TextSprite(36, (WIDTH / 2 - 40, HEIGHT / 2 + 50), "YES", BLACK)
 no_message = TextSprite(36, (WIDTH / 2 + 40, HEIGHT / 2 + 50), "NO", BLACK)
+score_message = TextSprite(36, (WIDTH - 60, 20), "SCORE: " + str(score), BLACK)
 
 
 def check_guys(guys_list):
@@ -155,6 +166,8 @@ while running:
         pa_message.draw()
         yes_message.draw()
         no_message.draw()
+    score_message.set_message("SCORE: " + str(score))
+    score_message.draw()
 
     # Визуализация (сборка)
     pygame.display.flip()
